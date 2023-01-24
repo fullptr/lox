@@ -10,6 +10,7 @@ add_executable(lox
     chunk.c
     memory.c
     debug.c
+    value.c
 )
 
 target_include_directories(lox PRIVATE .)
