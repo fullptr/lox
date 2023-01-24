@@ -5,6 +5,11 @@ set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS}")
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 set(CMAKE_C_STANDARD 17)
 
-add_executable(lox main.c)
+add_executable(lox
+    main.c
+    chunk.c
+    memory.c
+    debug.c
+)
 
 target_include_directories(lox PRIVATE .)

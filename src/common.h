@@ -1,8 +1,5 @@
-#ifndef LOX_COMMON_H
-#define LOX_COMMON_H
+#pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
-#endif // LOX_COMMON_H
