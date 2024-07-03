@@ -6,7 +6,11 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 add_executable(
     lox
-    lox.m.cpp
+    lox.c
+    memory.c
+    chunk.c
+    debug.c
+    value.c
 )
 
 target_include_directories(lox PRIVATE .)
