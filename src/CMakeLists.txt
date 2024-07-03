@@ -11,6 +11,7 @@ add_executable(
     chunk.c
     debug.c
     value.c
+    vm.c
 )
 
 target_include_directories(lox PRIVATE .)
