@@ -14,6 +14,7 @@ add_executable(
     vm.c
     compiler.c
     scanner.c
+    object.c
 )
 
 target_include_directories(lox PRIVATE .)
