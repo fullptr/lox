@@ -20,7 +20,7 @@ void initScanner(const char* source)
     scanner.line = 1;
 }
 
-static bool isAtEnd()
+static bool isAtEnd(void)
 {
     return *scanner.current == '\0';
 }
@@ -45,7 +45,7 @@ static Token errorToken(const char* message)
     return token;
 }
 
-static char advance()
+static char advance(void)
 {
     scanner.current++;
     return scanner.current[-1];
@@ -59,18 +59,18 @@ static bool match(char expected)
     return true;
 }
 
-static char peek()
+static char peek(void)
 {
     return *scanner.current;
 }
 
-static char peekNext()
+static char peekNext(void)
 {
     if (isAtEnd()) return '\0';
     return scanner.current[1];
 }
 
-static void skipWhitespace()
+static void skipWhitespace(void)
 {
     for (;;) {
         char c = peek();
@@ -85,7 +85,7 @@ static void skipWhitespace()
                 advance();
                 break;
             case '/':
-                if (peekNext('/')) {
+                if (peekNext() == '/') {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd()) advance();
                 } else {
@@ -97,7 +97,7 @@ static void skipWhitespace()
     }
 }
 
-static Token string()
+static Token string(void)
 {
     while (peek() != '"' && !isAtEnd()) {
         if (peek() == '\n') scanner.line++;
@@ -116,7 +116,7 @@ static bool isDigit(char c)
     return c >= '0' && c <= '9';
 }
 
-static Token number()
+static Token number(void)
 {
     while (isDigit(peek())) advance();
 
@@ -146,7 +146,7 @@ static TokenType checkKeyword(int start, int length, const char* rest, TokenType
     return TOKEN_IDENTIFIER;
 }
 
-static TokenType identifierType()
+static TokenType identifierType(void)
 {
     switch (scanner.start[0]) {
         case 'a': return checkKeyword(1, 2, "nd", TOKEN_AND);
@@ -181,13 +181,13 @@ static TokenType identifierType()
     return TOKEN_IDENTIFIER;
 }
 
-static Token identifier()
+static Token identifier(void)
 {
     while (isAlpha(peek()) || isDigit(peek())) advance();
     return makeToken(identifierType());
 }
 
-Token scanToken()
+Token scanToken(void)
 {
     skipWhitespace();
     scanner.start = scanner.current;
@@ -215,5 +215,6 @@ Token scanToken()
         case '>': return makeToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER);
         case '"': return string();
     }
+    printf("'%c'", c);
     return errorToken("Expected character.");
 }
