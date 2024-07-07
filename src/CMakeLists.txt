@@ -15,6 +15,7 @@ add_executable(
     compiler.c
     scanner.c
     object.c
+    table.c
 )
 
 target_include_directories(lox PRIVATE .)
