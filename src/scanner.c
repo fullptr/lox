@@ -91,6 +91,7 @@ static void skipWhitespace(void)
                 } else {
                     return;
                 }
+                break;
             default:
                 return;
         }
