@@ -13,7 +13,7 @@ add_executable(
     value.c
     vm.c
     compiler.c
-    scanner.c
+    scanner.cpp
     object.cpp
     table.cpp
 )
