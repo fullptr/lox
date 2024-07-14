@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unordered_map>
+#include <array>
 
 typedef struct
 {
@@ -281,7 +281,7 @@ static void endScope(void)
 static void expression(void);
 static void statement(void);
 static void declaration(void);
-static const ParseRule* getRule(TokenType type);
+static const ParseRule& getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 
 static uint8_t identifierConstant(Token* name)
@@ -537,8 +537,8 @@ static void unary(bool canAssign)
 static void binary(bool canAssign)
 {
     TokenType operatorType = parser.previous.type;
-    const ParseRule* rule = getRule(operatorType);
-    parsePrecedence((Precedence)(rule->precedence + 1));
+    const auto& rule = getRule(operatorType);
+    parsePrecedence((Precedence)(rule.precedence + 1));
 
     switch (operatorType) {
         case TOKEN_BANG_EQUAL:    emitBytes(OP_EQUAL, OP_NOT); break;
@@ -588,54 +588,53 @@ static void literal(bool canAssign)
     }
 }
 
-// TODO: Go back to using an array here, sadly this bit was easier in C
-static const std::unordered_map<TokenType, ParseRule> rules = {
-  {TOKEN_LEFT_PAREN,    {grouping, call,   PREC_CALL}},
-  {TOKEN_RIGHT_PAREN,   {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_LEFT_BRACE,    {NULL,     NULL,   PREC_NONE}}, 
-  {TOKEN_RIGHT_BRACE,   {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_COMMA,         {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_DOT,           {NULL,     dot,    PREC_CALL}},
-  {TOKEN_MINUS,         {unary,    binary, PREC_TERM}},
-  {TOKEN_PLUS,          {NULL,     binary, PREC_TERM}},
-  {TOKEN_SEMICOLON,     {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_SLASH,         {NULL,     binary, PREC_FACTOR}},
-  {TOKEN_STAR,          {NULL,     binary, PREC_FACTOR}},
-  {TOKEN_BANG,          {unary,    NULL,   PREC_NONE}},
-  {TOKEN_BANG_EQUAL,    {NULL,     binary, PREC_EQUALITY}},
-  {TOKEN_EQUAL,         {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_EQUAL_EQUAL,   {NULL,     binary, PREC_EQUALITY}},
-  {TOKEN_GREATER,       {NULL,     binary, PREC_COMPARISON}},
-  {TOKEN_GREATER_EQUAL, {NULL,     binary, PREC_COMPARISON}},
-  {TOKEN_LESS,          {NULL,     binary, PREC_COMPARISON}},
-  {TOKEN_LESS_EQUAL,    {NULL,     binary, PREC_COMPARISON}},
-  {TOKEN_IDENTIFIER,    {variable, NULL,   PREC_NONE}},
-  {TOKEN_STRING,        {string,   NULL,   PREC_NONE}},
-  {TOKEN_NUMBER,        {number,   NULL,   PREC_NONE}},
-  {TOKEN_AND,           {NULL,     and_,   PREC_NONE}},
-  {TOKEN_CLASS,         {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_ELSE,          {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_FALSE,         {literal,  NULL,   PREC_NONE}},
-  {TOKEN_FOR,           {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_FUN,           {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_IF,            {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_NIL,           {literal,  NULL,   PREC_NONE}},
-  {TOKEN_OR,            {NULL,     or_,    PREC_NONE}},
-  {TOKEN_PRINT,         {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_RETURN,        {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_SUPER,         {super_,   NULL,   PREC_NONE}},
-  {TOKEN_THIS,          {this_,    NULL,   PREC_NONE}},
-  {TOKEN_TRUE,          {literal,  NULL,   PREC_NONE}},
-  {TOKEN_VAR,           {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_WHILE,         {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_ERROR,         {NULL,     NULL,   PREC_NONE}},
-  {TOKEN_EOF,           {NULL,     NULL,   PREC_NONE}},
+static constexpr std::array rules = {
+  /*TOKEN_LEFT_PAREN   */ ParseRule{grouping, call,   PREC_CALL},
+  /*TOKEN_RIGHT_PAREN  */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_LEFT_BRACE   */ ParseRule{NULL,     NULL,   PREC_NONE}, 
+  /*TOKEN_RIGHT_BRACE  */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_COMMA        */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_DOT          */ ParseRule{NULL,     dot,    PREC_CALL},
+  /*TOKEN_MINUS        */ ParseRule{unary,    binary, PREC_TERM},
+  /*TOKEN_PLUS         */ ParseRule{NULL,     binary, PREC_TERM},
+  /*TOKEN_SEMICOLON    */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_SLASH        */ ParseRule{NULL,     binary, PREC_FACTOR},
+  /*TOKEN_STAR         */ ParseRule{NULL,     binary, PREC_FACTOR},
+  /*TOKEN_BANG         */ ParseRule{unary,    NULL,   PREC_NONE},
+  /*TOKEN_BANG_EQUAL   */ ParseRule{NULL,     binary, PREC_EQUALITY},
+  /*TOKEN_EQUAL        */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_EQUAL_EQUAL  */ ParseRule{NULL,     binary, PREC_EQUALITY},
+  /*TOKEN_GREATER      */ ParseRule{NULL,     binary, PREC_COMPARISON},
+  /*TOKEN_GREATER_EQUAL*/ ParseRule{NULL,     binary, PREC_COMPARISON},
+  /*TOKEN_LESS         */ ParseRule{NULL,     binary, PREC_COMPARISON},
+  /*TOKEN_LESS_EQUAL   */ ParseRule{NULL,     binary, PREC_COMPARISON},
+  /*TOKEN_IDENTIFIER   */ ParseRule{variable, NULL,   PREC_NONE},
+  /*TOKEN_STRING       */ ParseRule{string,   NULL,   PREC_NONE},
+  /*TOKEN_NUMBER       */ ParseRule{number,   NULL,   PREC_NONE},
+  /*TOKEN_AND          */ ParseRule{NULL,     and_,   PREC_NONE},
+  /*TOKEN_CLASS        */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_ELSE         */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_FALSE        */ ParseRule{literal,  NULL,   PREC_NONE},
+  /*TOKEN_FOR          */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_FUN          */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_IF           */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_NIL          */ ParseRule{literal,  NULL,   PREC_NONE},
+  /*TOKEN_OR           */ ParseRule{NULL,     or_,    PREC_NONE},
+  /*TOKEN_PRINT        */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_RETURN       */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_SUPER        */ ParseRule{super_,   NULL,   PREC_NONE},
+  /*TOKEN_THIS         */ ParseRule{this_,    NULL,   PREC_NONE},
+  /*TOKEN_TRUE         */ ParseRule{literal,  NULL,   PREC_NONE},
+  /*TOKEN_VAR          */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_WHILE        */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_ERROR        */ ParseRule{NULL,     NULL,   PREC_NONE},
+  /*TOKEN_EOF          */ ParseRule{NULL,     NULL,   PREC_NONE},
 };
 
 static void parsePrecedence(Precedence precedence)
 {
     advance();
-    ParseFn prefixRule = getRule(parser.previous.type)->prefix;
+    ParseFn prefixRule = getRule(parser.previous.type).prefix;
     if (prefixRule == NULL) {
         error("Expect expression.");
         return;
@@ -644,9 +643,9 @@ static void parsePrecedence(Precedence precedence)
     bool canAssign = precedence <= PREC_ASSIGNMENT;
     prefixRule(canAssign);
 
-    while (precedence <= getRule(parser.current.type)->precedence) {
+    while (precedence <= getRule(parser.current.type).precedence) {
         advance();
-        ParseFn infixRule = getRule(parser.previous.type)->infix;
+        ParseFn infixRule = getRule(parser.previous.type).infix;
         infixRule(canAssign);
     }
 
@@ -655,9 +654,9 @@ static void parsePrecedence(Precedence precedence)
     }
 }
 
-static const ParseRule* getRule(TokenType type)
+static const ParseRule& getRule(TokenType type)
 {
-    return &rules.at(type);
+    return rules.at(type);
 }
 
 static void expression(void)
