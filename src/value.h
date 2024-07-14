@@ -3,6 +3,10 @@
 
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct Obj Obj;
 typedef struct ObjString ObjString;
 
@@ -55,7 +59,7 @@ static inline double valueToNum(Value value)
 }
 
 #else
-typedef struct
+typedef struct Value
 {
     ValueType type;
     union {
@@ -66,7 +70,7 @@ typedef struct
 } Value;
 
 #define BOOL_VAL(value)   ((Value){VAL_BOOL, {.boolean = value}})
-#define NIL_VAL           ((Value){VAL_NIL, {.number = 0}})
+#define NIL_VAL           ((Value){VAL_NIL, Value{.number = 0}})
 #define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
 #define OBJ_VAL(value)    ((Value){VAL_OBJ, {.obj = (Obj*)value}})
 
@@ -93,3 +97,7 @@ void initValueArray(ValueArray* array);
 void writeValueArray(ValueArray* array, Value value);
 void freeValueArray(ValueArray* array);
 void printValue(Value value);
+
+#ifdef __cplusplus
+}
+#endif

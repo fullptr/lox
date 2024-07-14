@@ -4,6 +4,10 @@
 #include "table.h"
 #include "object.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FRAMES_MAX 64
 #define STACK_MAX (FRAMES_MAX * UINT8_COUNT)
 
@@ -49,3 +53,7 @@ void freeVM(void);
 InterpretResult interpret(const char* source);
 void push(Value value);
 Value pop(void);
+
+#ifdef __cplusplus
+}
+#endif

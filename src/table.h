@@ -3,6 +3,10 @@
 #include "common.h"
 #include "value.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     ObjString* key;
@@ -25,3 +29,7 @@ void tableAddAll(Table* from, Table* to);
 ObjString* tableFindString(Table* table, const char* chars, int length, uint32_t hash);
 void tableRemoveWhite(Table* table);
 void markTable(Table* table);
+
+#ifdef __cplusplus
+}
+#endif

@@ -3,7 +3,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-//#define NAN_BOXING
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define NAN_BOXING
 
 #if 0
 #define DEBUG_PRINT_CODE
@@ -13,3 +17,7 @@
 #endif
 
 #define UINT8_COUNT (UINT8_MAX + 1)
+
+#ifdef __cplusplus
+}
+#endif

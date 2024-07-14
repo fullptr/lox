@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum {
     // Single-character tokens
     TOKEN_LEFT_PAREN, TOKEN_RIGHT_PAREN,
@@ -32,3 +36,7 @@ typedef struct
 
 void initScanner(const char* source);
 Token scanToken(void);
+
+#ifdef __cplusplus
+}
+#endif

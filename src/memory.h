@@ -2,6 +2,10 @@
 #include "common.h"
 #include "object.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define ALLOCATE(type, count) \
      (type*)reallocate(NULL, 0, sizeof(type) * (count))
 
@@ -23,3 +27,7 @@ void markObject(Obj* object);
 void markValue(Value value);
 void collectGarbage();
 void freeObjects(void);
+
+#ifdef __cplusplus
+}
+#endif
