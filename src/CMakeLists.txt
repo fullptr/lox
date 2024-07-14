@@ -10,7 +10,7 @@ add_executable(
     memory.cpp
     chunk.cpp
     debug.cpp
-    value.c
+    value.cpp
     vm.cpp
     compiler.c
     scanner.cpp
