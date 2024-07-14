@@ -9,7 +9,7 @@ add_executable(
     lox.c
     memory.c
     chunk.cpp
-    debug.c
+    debug.cpp
     value.c
     vm.c
     compiler.c
