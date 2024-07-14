@@ -14,7 +14,7 @@ add_executable(
     vm.c
     compiler.c
     scanner.c
-    object.c
+    object.cpp
     table.cpp
 )
 
