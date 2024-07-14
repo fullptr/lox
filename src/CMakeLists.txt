@@ -11,7 +11,7 @@ add_executable(
     chunk.cpp
     debug.cpp
     value.c
-    vm.c
+    vm.cpp
     compiler.c
     scanner.cpp
     object.cpp
