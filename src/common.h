@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#define NAN_BOXING
+//#define NAN_BOXING
 
 #if 0
 #define DEBUG_PRINT_CODE

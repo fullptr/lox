@@ -69,10 +69,10 @@ typedef struct Value
     } as;
 } Value;
 
-#define BOOL_VAL(value)   ((Value){VAL_BOOL, {.boolean = value}})
-#define NIL_VAL           ((Value){VAL_NIL, Value{.number = 0}})
-#define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
-#define OBJ_VAL(value)    ((Value){VAL_OBJ, {.obj = (Obj*)value}})
+#define BOOL_VAL(value)   (Value{.type=VAL_BOOL, .as={.boolean = value}})
+#define NIL_VAL           (Value{.type=VAL_NIL, .as={.number = 0}})
+#define NUMBER_VAL(value) (Value{.type=VAL_NUMBER, .as={.number = value}})
+#define OBJ_VAL(value)    (Value{.type=VAL_OBJ, .as{.obj = (Obj*)value}})
 
 #define AS_BOOL(value)    ((value).as.boolean)
 #define AS_NUMBER(value)  ((value).as.number)
