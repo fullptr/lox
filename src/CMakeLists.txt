@@ -7,7 +7,7 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 add_executable(
     lox
     lox.c
-    memory.c
+    memory.cpp
     chunk.cpp
     debug.cpp
     value.c

@@ -1,6 +1,7 @@
 #include "memory.h"
 #include "vm.h"
 #include "debug.h"
+#include "compiler.h"
 
 #include <stdlib.h>
 #include <stdio.h>
