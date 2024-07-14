@@ -12,7 +12,7 @@ add_executable(
     debug.cpp
     value.cpp
     vm.cpp
-    compiler.c
+    compiler.cpp
     scanner.cpp
     object.cpp
     table.cpp
