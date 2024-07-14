@@ -281,7 +281,7 @@ static void endScope(void)
 static void expression(void);
 static void statement(void);
 static void declaration(void);
-static ParseRule* getRule(TokenType type);
+static const ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 
 static uint8_t identifierConstant(Token* name)
@@ -537,7 +537,7 @@ static void unary(bool canAssign)
 static void binary(bool canAssign)
 {
     TokenType operatorType = parser.previous.type;
-    ParseRule* rule = getRule(operatorType);
+    const ParseRule* rule = getRule(operatorType);
     parsePrecedence((Precedence)(rule->precedence + 1));
 
     switch (operatorType) {
@@ -589,7 +589,7 @@ static void literal(bool canAssign)
 }
 
 // TODO: Go back to using an array here, sadly this bit was easier in C
-std::unordered_map<TokenType, ParseRule> rules = {
+static const std::unordered_map<TokenType, ParseRule> rules = {
   {TOKEN_LEFT_PAREN,    {grouping, call,   PREC_CALL}},
   {TOKEN_RIGHT_PAREN,   {NULL,     NULL,   PREC_NONE}},
   {TOKEN_LEFT_BRACE,    {NULL,     NULL,   PREC_NONE}}, 
@@ -655,9 +655,9 @@ static void parsePrecedence(Precedence precedence)
     }
 }
 
-static ParseRule* getRule(TokenType type)
+static const ParseRule* getRule(TokenType type)
 {
-    return &rules[type];
+    return &rules.at(type);
 }
 
 static void expression(void)
