@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+//#define NAN_BOXING
+
 #if 0
 #define DEBUG_PRINT_CODE
 #define DEBUG_TRACE_EXECUTION
