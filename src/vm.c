@@ -312,7 +312,7 @@ static InterpretResult run(void)
                 ObjString* name = READ_STRING();
                 Value value;
                 if (!tableGet(&vm.globals, name, &value)) {
-                    runtimeError("Undefined variable '%s'", name->chars);
+                    runtimeError("Undefined variable (1) '%s'", name->chars);
                     return INTERPRET_RUNTIME_ERROR;;
                 }
                 push(value);
@@ -333,7 +333,7 @@ static InterpretResult run(void)
                 ObjString* name = READ_STRING();
                 if (tableSet(&vm.globals, name, peek(0))) {
                     tableDelete(&vm.globals, name);
-                    runtimeError("Undefined variable '%s'.", name->chars);
+                    runtimeError("Undefined variable (2) '%s'.", name->chars);
                     return INTERPRET_RUNTIME_ERROR;
                 }
                 break;
@@ -382,6 +382,15 @@ static InterpretResult run(void)
                 push(value);
                 break;
             }
+            case OP_GET_SUPER: {
+                ObjString* name = READ_STRING();
+                ObjClass* superclass = AS_CLASS(pop());
+
+                if (!bindMethod(superclass, name)) {
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                break;
+            }
             case OP_EQUAL: {
                 Value b = pop();
                 Value a = pop();
@@ -415,6 +424,7 @@ static InterpretResult run(void)
                     return INTERPRET_RUNTIME_ERROR;
                 }
                 push(NUMBER_VAL(-AS_NUMBER(pop())));
+                break;
             case OP_PRINT: {
                 printValue(pop());
                 printf("\n");
@@ -447,6 +457,16 @@ static InterpretResult run(void)
                 ObjString* method = READ_STRING();
                 int argCount = READ_BYTE();
                 if (!invoke(method, argCount)) {
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                frame = &vm.frames[vm.frameCount - 1];
+                break;
+            }
+            case OP_SUPER_INVOKE: {
+                ObjString* method = READ_STRING();
+                int argCount = READ_BYTE();
+                ObjClass* superclass = AS_CLASS(pop());
+                if (!invokeFromClass(superclass, method, argCount)) {
                     return INTERPRET_RUNTIME_ERROR;
                 }
                 frame = &vm.frames[vm.frameCount - 1];
@@ -489,6 +509,19 @@ static InterpretResult run(void)
             case OP_CLASS:
                 push(OBJ_VAL(newClass(READ_STRING())));
                 break;
+            case OP_INHERIT: {
+                Value superclass = peek(1);
+                if (!IS_CLASS(superclass)) {
+                    runtimeError("Superclass must be a class.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+
+                ObjClass* subclass = AS_CLASS(peek(0));
+                tableAddAll(&AS_CLASS(superclass)->methods,
+                            &subclass->methods);
+                pop(); // Subclass.
+                break;
+            }
             case OP_METHOD:
                 defineMethod(READ_STRING());
                 break;
